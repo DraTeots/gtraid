@@ -1,0 +1,5 @@
+discord.py
+numpy
+opencv-python
+pytesseract
+pyyaml

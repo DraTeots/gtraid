@@ -1,0 +1,77 @@
+resolutions:
+
+    # 1280x720 resolution
+    w1280h720:
+
+        # This is the winodow where hits are listed. Must be cropped by black frame (see test images)
+        hits_window:
+            x_start: 184
+            y_start: 97
+            x_end: 1083
+            y_end: 673
+
+        hit_image:
+            # We use these dimensions to drop partially scrolled hits,
+            # which are difficult/impossible to recognize
+            min_width: 880  # original 888
+            min_height: 100  # original 112
+
+            # inside image, where name, party and boss are located
+            name_rect:
+                x_start: 5
+                y_start: 4
+                x_end: 291
+                y_end: 36
+            party_rect:
+                x_start: 10
+                y_start: 46
+                x_end: 250
+                y_end: 100
+            damage_rect:
+                x_start: 255
+                y_start: 50
+                x_end: 670
+                y_end: 105
+            boss_rect:
+                x_start: 710
+                y_start: 45
+                x_end: 850
+                y_end: 105
+
+    # 1280x720 resolution
+    w2560h1600:
+
+        # This is the winodow where hits are listed. Must be cropped by black frame (see test images)
+        hits_window:
+            x_start: 375
+            y_start: 276
+            x_end: 2165
+            y_end: 1425
+
+        hit_image:
+            # We use these dimensions to drop partially scrolled hits,
+            # which are difficult/impossible to recognize
+            min_width: 880    # original 888
+            min_height: 100   # original 112
+
+            # inside image, where name, party and boss are located
+            name_rect:
+                x_start: 10
+                y_start: 10
+                x_end: 500
+                y_end: 70
+            party_rect:
+                x_start: 20
+                y_start: 100
+                x_end: 500
+                y_end: 200
+            damage_rect:
+                x_start: 500
+                y_start: 80
+                x_end: 1300
+                y_end: 200
+            boss_rect:
+                x_start: 1425
+                y_start: 90
+                x_end: 1725
+                y_end: 200
