@@ -215,20 +215,22 @@ def recognize_damage(img, debug=0):
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
     # threshold image to remove noise and create an inverted mask with with OTSU
-    mask = cv2.threshold(gray, 160, 255, cv2.THRESH_BINARY)[0]
-
-    # By default OpenCV stores images in BGR format and since pytesseract assumes RGB format,
-    # we need to convert from BGR to RGB format/mode:
-    img_rgb = cv2.cvtColor(mask, cv2.COLOR_BGR2RGB)
-
-    damage_str = pytesseract.image_to_string(img_rgb).replace("\n\f,", "")
-    print("recognize_damage: Damage is:", damage_str)
+    mask = 255 - cv2.threshold(gray, 160, 255, cv2.THRESH_BINARY)[1]
 
     if debug >= 2:
         cv2.imshow("Original", img)
         cv2.imshow("Masking damage", mask)
         cv2.waitKey(0)
         cv2.destroyAllWindows()
+
+    # By default OpenCV stores images in BGR format and since pytesseract assumes RGB format,
+    # we need to convert from BGR to RGB format/mode:
+    img_rgb = cv2.cvtColor(mask, cv2.COLOR_BGR2RGB)
+
+    damage_str = pytesseract.image_to_string(img_rgb)
+    if damage_str:
+        damage_str = damage_str.strip().replace("\n\f,", "")
+    print("recognize_damage: Damage is:", damage_str)
 
     return mask, damage_str
 
@@ -286,6 +288,8 @@ def recognize_name(img, debug=0):
 
     # recognize the image
     name = pytesseract.image_to_string(reco_image, lang="kor+eng")
+    if name:
+        name = name.strip()
     print(f"Name is: {name}")
 
     if debug >= 2:
@@ -299,7 +303,7 @@ def recognize_name(img, debug=0):
     return reco_image, name
 
 
-def recognize_image(img_path, crop_rects, report=1, debug=1):
+def recognize_screenshot(img, crop_rects, report=1, debug=1):
     """
     Recognizes the image
     :param img_path:
@@ -308,15 +312,6 @@ def recognize_image(img_path, crop_rects, report=1, debug=1):
     :param debug:
     :return:
     """
-
-
-
-    # 0. Open image
-    img = img_path
-
-    if img is None:
-        error = f"Not able to open image '{img_path}'"
-        raise ValueError(error)
 
     # 1. Crop hit window
     img_height, img_width, _ = img.shape
@@ -330,9 +325,9 @@ def recognize_image(img_path, crop_rects, report=1, debug=1):
     hit_images = find_hits(raid_hits_img,
                            crop_rects["hit_image"]["min_width"],
                            crop_rects["hit_image"]["min_height"],
-                           debug=0)
+                           report=report, debug=debug)
 
-    it_records = []
+    hit_records = []
 
     # 3. Crop hits image to pieces
     for index, hit_image in enumerate(hit_images):
@@ -353,14 +348,25 @@ def recognize_image(img_path, crop_rects, report=1, debug=1):
                      (crop_rects["hit_image"]["boss_rect"]["x_end"],
                       crop_rects["hit_image"]["boss_rect"]["y_end"]))
 
-        name_img, party_img, boss_img, damage_img = crop_hit_image(hit_image, index, name_rect, party_rect,
-                                                                   damage_rect, boss_rect)
-        name_rec_img, name = recognize_name(name_img)
-        damage_rec_img, damage = recognize_damage(damage_img)
+        name_img, party_img, boss_img, damage_img = crop_hit_image(hit_image, index,
+                                                                   name_rect, party_rect, damage_rect, boss_rect,
+                                                                   debug)
+        # 4. Recognize name and damage
+        name_rec_img, name = recognize_name(name_img, debug=debug)
+        damage_rec_img, damage = recognize_damage(damage_img, debug=debug)
 
-    # forming result
-    result = RecognizedImage()
-    result.h
+        hit = RecognizedHitRecord(name=name,                      # Recognized name
+                                  damage=damage,                  # Recognized damage
+                                  original_img=hit_image,         # Image of the record
+                                  name_rec_img=name_rec_img,      # Image with name (used for recognition)
+                                  damage_rec_img=damage_rec_img,  # Image with damage (used for recognition)
+                                  party_img=party_img,            # Image with party
+                                  boss_img=boss_img)              # Image with boss
+        hit_records.append(hit)
+
+    # 99. forming result
+    result = RecognizedImage(hit_records=hit_records)
+    return result
 
 if __name__ == "__main__":
 
@@ -384,38 +390,8 @@ if __name__ == "__main__":
     img_height, img_width, _ = img.shape
     crop_rects = load_crop_rects("../dimensions.yaml", img_width, img_height)
 
-    crop_hits_dim = ((crop_rects["hits_window"]["x_start"], crop_rects["hits_window"]["y_start"]),
-                     (crop_rects["hits_window"]["x_end"], crop_rects["hits_window"]["y_end"]))
+    recognize_screenshot(img, crop_rects, debug=2, report=1)
 
-    raid_hits_img = crop_hits_window(img, crop_hits_dim, debug=0)
-
-
-    hit_images = find_hits(raid_hits_img, crop_rects["hit_image"]["min_width"], crop_rects["hit_image"]["min_height"], debug=0)
-
-    for index, hit_image in enumerate(hit_images):
-        name_rect = ((crop_rects["hit_image"]["name_rect"]["x_start"],
-                      crop_rects["hit_image"]["name_rect"]["y_start"]),
-                     (crop_rects["hit_image"]["name_rect"]["x_end"],
-                      crop_rects["hit_image"]["name_rect"]["y_end"]))
-        party_rect = ((crop_rects["hit_image"]["party_rect"]["x_start"],
-                       crop_rects["hit_image"]["party_rect"]["y_start"]),
-                      (crop_rects["hit_image"]["party_rect"]["x_end"],
-                       crop_rects["hit_image"]["party_rect"]["y_end"]))
-        damage_rect = ((crop_rects["hit_image"]["damage_rect"]["x_start"],
-                        crop_rects["hit_image"]["damage_rect"]["y_start"]),
-                       (crop_rects["hit_image"]["damage_rect"]["x_end"],
-                        crop_rects["hit_image"]["damage_rect"]["y_end"]))
-        boss_rect = ((crop_rects["hit_image"]["boss_rect"]["x_start"],
-                      crop_rects["hit_image"]["boss_rect"]["y_start"]),
-                     (crop_rects["hit_image"]["boss_rect"]["x_end"],
-                      crop_rects["hit_image"]["boss_rect"]["y_end"]))
-
-        name_img, party_img, boss_img, damage_img = crop_hit_image(hit_image, index, name_rect, party_rect, damage_rect, boss_rect)
-        recognize_name(name_img)
-        #break
-
-    #cv2.waitKey(0)
-    #cv2.destroyAllWindows()
 
 
 
