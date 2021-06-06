@@ -1,6 +1,9 @@
 Utility to automatically parse Guardian Tales screenshots and build Excel spreadsheets
 with raid hits, utilizing computer vision (OpenCV) and text recognision (pyTesseract). 
 
+
+![introduction](test_images/intro.png)
+
 Currently the workflow assumed to be:
 
 - An admin has python and everything installed 
