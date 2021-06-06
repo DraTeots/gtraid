@@ -44,19 +44,19 @@ Future plans (enhanced workflow):
    (if you don't know how to use GitHub, you can download zipped file
    `Code -> Download zip`)
  
-4. Open python console in a folder with cloned/unzipped code and do:
+4. Open a python console in a folder with cloned/unzipped code and do:
 
     ```
    pip install -m requirments.txt
     ```
-5. Run test, to check you nailed and it working
+5. Run test, to check you nailed it and script is working
 
    ```bash
     python test.py
    ```
-   You should see in a details how a test image is processed (just press space)    
+   You should see in details how a test image is processed (just press space)    
 
-## Run
+## Usage
 
 In the directory with gt.py run 
 
@@ -68,7 +68,7 @@ python gt.py screenshot_folder/*
 
 Flags:
 
-- ```-d```, ```--debug``` - Enable debugging output. 0-none, 1-prings, 2-show images
+- ```-d```, ```--debug``` - Enable debugging output. 0-none, 1-prints, 2-show images
 - ```-r```, ```--report``` - Report folder (set blank for no report)
 - ```-o```, ```--output``` - File name of resulting xlsx
 - ```-t```, ```--tesseract``` - Full path to tesseract.exe
