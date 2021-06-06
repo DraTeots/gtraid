@@ -75,3 +75,41 @@ resolutions:
                 y_start: 90
                 x_end: 1725
                 y_end: 200
+
+    # 1280x720 resolution
+    w2220h1080:
+
+        # This is the winodow where hits are listed. Must be cropped by black frame (see test images)
+        hits_window:
+            x_start: 431
+            y_start: 148
+            x_end: 1770
+            y_end: 1003
+
+        hit_image:
+            # We use these dimensions to drop partially scrolled hits,
+            # which are difficult/impossible to recognize
+            min_width: 880  # original 888
+            min_height: 100  # original 112
+
+            # inside image, where name, party and boss are located
+            name_rect:
+                x_start: 5
+                y_start: 4
+                x_end: 440
+                y_end: 55
+            party_rect:
+                x_start: 15
+                y_start: 71
+                x_end: 375
+                y_end: 150
+            damage_rect:
+                x_start: 376
+                y_start: 75
+                x_end: 850
+                y_end: 150
+            boss_rect:
+                x_start: 1083
+                y_start: 64
+                x_end: 1277
+                y_end: 153

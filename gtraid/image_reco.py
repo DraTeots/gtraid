@@ -16,39 +16,58 @@ RecognizedHitRecord = namedtuple('RecognizedHitRecord',
 
 
 RecognizedImage = namedtuple('RecognizedImage',
-                             ['hit_records'])           # Recognized hit records collected from the image
+                             [
+                                 'hit_records',
+                                 'name'
+                             ])  # Recognized hit records collected from the image
 
 
-def load_crop_rects(config_file, width, height):
+class DimensionsFile:
     """
-    STEP 0. Load crop parameters for a given resolution
-    :param config_file:
-    :param width:
-    :param height:
-    :return:
+    DimensionsFile is yaml file that hold parameters how to crop and recognize image for different resolution
     """
 
-    print(f"load_crop_rects: Searching data for resolution {width}x{height}")
-    with open(config_file, 'r') as stream:
-        try:
-            content = yaml.safe_load(stream)
-            res_name = f"w{width}h{height}"
-            if res_name not in content["resolutions"].keys():
-                err = f"The resolution '{res_name}' is not found in file '{config_file}'"
-                raise KeyError(err)
-            print(f"load_crop_rects: found data for resolution {res_name}")
-            return content["resolutions"][res_name]
-        except yaml.YAMLError as exc:
-            print(exc)
+    def __init__(self, config_file):
+        """
+        Loads and holds crop parameters for different resolutions
+
+        :param config_file:
+        """
+        print(f"DimensionsFile: Loading file: '{config_file}'")
+        with open(config_file, 'r') as stream:
+            try:
+                content = yaml.safe_load(stream)
+                self._crop_rects = content["resolutions"]
+
+            except yaml.YAMLError as exc:
+                print(exc)
+                raise
+
+    def get_crop_rects(self, img):
+        """
+            STEP 0. Get crop parameters for a given resolution
+            :param config_file:
+            :param width:
+            :param height:
+            :return:
+            """
+        height, width, _ = img.shape
+        print(f"DimensionsFile:get_crop_rects: Searching data for resolution {width}x{height}")
+        res_name = f"w{width}h{height}"
+        if res_name not in self._crop_rects.keys():
+            err = f"The resolution '{res_name}' is not found"
+            raise KeyError(err)
+        print(f"load_crop_rects: found data for resolution {res_name}")
+        return self._crop_rects[res_name]
 
 
-def crop_hits_window(img, crop_rect, debug=1, report=1):
+def crop_hits_window(img, crop_rect, debug=1, report_path=""):
     """
     Crops a window with member hits from overall screenshot
     :param img:
     :param crop_rect:
     :param debug:
-    :param report:
+    :param report_path:
     :return:
     """
 
@@ -67,8 +86,8 @@ def crop_hits_window(img, crop_rect, debug=1, report=1):
     debug_img = cv2.rectangle(debug_img, crop_rect[0], crop_rect[1], (255, 0, 0), 2)
 
     # Save image for a report
-    if report:
-        cv2.imwrite("report/01_crop_hits_window__aim.jpg", debug_img)
+    if report_path:
+        cv2.imwrite(report_path+"___01_crop_hits_window__aim.jpg", debug_img)
 
     # show image
     if debug >= 2:
@@ -80,7 +99,7 @@ def crop_hits_window(img, crop_rect, debug=1, report=1):
     return crop
 
 
-def find_hits(img, hitbox_min_w,  hitbox_min_h, debug=1, report=1):
+def find_hits(img, hitbox_min_w,  hitbox_min_h, debug=1, report_path=""):
     """
     Find and extract hit images from hits list (hits list must be cropped)
 
@@ -143,16 +162,16 @@ def find_hits(img, hitbox_min_w,  hitbox_min_h, debug=1, report=1):
         cv2.waitKey(0)
         cv2.destroyAllWindows()
 
-    if report:
+    if report_path:
         # Save image for a report
-        cv2.imwrite("report/02_find_hits__mask.jpg", mask)
+        cv2.imwrite(report_path + "___02_fndhts__mask.jpg", mask)
         img_with_contours = cv2.drawContours(img.copy(), contours, -1, (255, 0, 0), thickness=2)
-        cv2.imwrite("report/02_find_hits__contours.jpg", img_with_contours)
+        cv2.imwrite(report_path + "___02_fndhts__contours.jpg", img_with_contours)
 
     return hit_images
 
 
-def crop_hit_image(img, img_index, name_rect, party_rect, damage_rect, boss_rect, report=1):
+def crop_hit_image(img, img_index, name_rect, party_rect, damage_rect, boss_rect, report_path=""):
     """
     Crops hit image to pieces with name+time, party, damage, boss images
     :param img: image with hit (box)
@@ -161,7 +180,7 @@ def crop_hit_image(img, img_index, name_rect, party_rect, damage_rect, boss_rect
     :param party_rect: coordinates of party rectangle ((x_start, y_start), (x_end, y_end))
     :param damage_rect: coordinates of damage rectangle ((x_start, y_start), (x_end, y_end))
     :param boss_rect:  coordinates of boss rectangle ((x_start, y_start), (x_end, y_end))
-    :param report: 1 - write report
+    :param report_path: where to write report to
     :return: name_img, party_img, boss_img, damage_img
     """
     img_height, img_width, img_channels = img.shape
@@ -192,13 +211,13 @@ def crop_hit_image(img, img_index, name_rect, party_rect, damage_rect, boss_rect
     damage_img = img[y_start:y_end, x_start:x_end]
 
     # TODO remove it to a sane place
-    if report:
+    if report_path:
         # Save image for a report
-        cv2.imwrite(f"report/03_crop_hit_{str(img_index).zfill(3)}.jpg", debug_image)
-        cv2.imwrite(f"report/03_crop_hit_name_img_{str(img_index).zfill(3)}.jpg", name_img)
-        cv2.imwrite(f"report/03_crop_hit_party_img_{str(img_index).zfill(3)}.jpg", party_img)
-        cv2.imwrite(f"report/03_crop_hit_boss_img_{str(img_index).zfill(3)}.jpg", boss_img)
-        cv2.imwrite(f"report/03_crop_hit_damage_img_{str(img_index).zfill(3)}.jpg", damage_img)
+        cv2.imwrite(report_path + f"___03_{str(img_index).zfill(3)}_crop-hit.jpg", debug_image)
+        cv2.imwrite(report_path + f"___03_{str(img_index).zfill(3)}_crop-hit_name.jpg", name_img)
+        cv2.imwrite(report_path + f"___03_{str(img_index).zfill(3)}_crop-hit_party.jpg", party_img)
+        cv2.imwrite(report_path + f"___03_{str(img_index).zfill(3)}_crop-hit_boss.jpg", boss_img)
+        cv2.imwrite(report_path + f"___03_{str(img_index).zfill(3)}_crop-hit_damage.jpg", damage_img)
 
     return name_img, party_img, boss_img, damage_img
 
@@ -235,28 +254,34 @@ def recognize_damage(img, debug=0):
     return mask, damage_str
 
 
-def autocrop(image, threshold=0):
-    """Crops any edges below or equal to threshold
+def auto_crop_dimensions(image, threshold=0):
+    """Find crop dimensions aiming to crop any edges below or equal to threshold
 
     Crops blank image to 1x1.
 
-    Returns cropped image.
+    Returns cropped rectangle: cols_from, cols_to, rows_from, rows_to
 
     """
     if len(image.shape) == 3:
-        flatImage = np.max(image, 2)
+        flat_image = np.max(image, 2)
     else:
-        flatImage = image
-    assert len(flatImage.shape) == 2
+        flat_image = image
+    assert len(flat_image.shape) == 2
 
-    rows = np.where(np.max(flatImage, 0) > threshold)[0]
+    rows = np.where(np.max(flat_image, 0) > threshold)[0]
     if rows.size:
-        cols = np.where(np.max(flatImage, 1) > threshold)[0]
+        cols = np.where(np.max(flat_image, 1) > threshold)[0]
         # image = image[cols[0]: cols[-1] + 1, rows[0]: rows[-1] + 1]
         return cols[0], cols[-1] + 1, rows[0], rows[-1] + 1
     else:
         # image = image[:1, :1]
         return 0, 1, 0, 1
+
+
+def auto_crop(image, threshold=0):
+    """Crops """
+    crop_rect = auto_crop_dimensions(image, threshold)
+    return image[crop_rect[0]:crop_rect[1], crop_rect[2]: crop_rect[3]]
 
 
 def recognize_name(img, debug=0):
@@ -275,7 +300,7 @@ def recognize_name(img, debug=0):
 
     # This mask removes time information, but name is difficult to recognize
     # so we use autocrop function, to figure the place where name ends!
-    crop_rect = autocrop(only_name_mask)
+    crop_rect = auto_crop_dimensions(only_name_mask)
 
     # Now we crop image removing not needed time information
     crop_name_img = gray[:, :crop_rect[3]+10]
@@ -303,14 +328,15 @@ def recognize_name(img, debug=0):
     return reco_image, name
 
 
-def recognize_screenshot(img, crop_rects, report=1, debug=1):
+def recognize_screenshot(img, crop_rects, name='', report_path="", debug=1):
     """
     Recognizes the image
-    :param img_path:
-    :param crop_rects:
-    :param report:
-    :param debug:
-    :return:
+    :param img: Image object with the image to recognize
+    :param crop_rects: Crop rectangles, how to crop subparts of image
+    :param name: Some name, like file name, will be added in the record
+    :param report_path: name of the report
+    :param debug: 0 - show nothing, 1 - debug prints, 2 - debug imgshow
+    :return: RecognizedImage with recognized data
     """
 
     # 1. Crop hit window
@@ -319,13 +345,13 @@ def recognize_screenshot(img, crop_rects, report=1, debug=1):
     crop_hits_dim = ((crop_rects["hits_window"]["x_start"], crop_rects["hits_window"]["y_start"]),
                      (crop_rects["hits_window"]["x_end"], crop_rects["hits_window"]["y_end"]))
 
-    raid_hits_img = crop_hits_window(img, crop_hits_dim, debug=debug)
+    raid_hits_img = crop_hits_window(img, crop_hits_dim, debug=debug, report_path=report_path)
 
     # 2. Find hits images
     hit_images = find_hits(raid_hits_img,
                            crop_rects["hit_image"]["min_width"],
                            crop_rects["hit_image"]["min_height"],
-                           report=report, debug=debug)
+                           report_path=report_path, debug=debug)
 
     hit_records = []
 
@@ -350,7 +376,7 @@ def recognize_screenshot(img, crop_rects, report=1, debug=1):
 
         name_img, party_img, boss_img, damage_img = crop_hit_image(hit_image, index,
                                                                    name_rect, party_rect, damage_rect, boss_rect,
-                                                                   debug)
+                                                                   report_path=report_path)
         # 4. Recognize name and damage
         name_rec_img, name = recognize_name(name_img, debug=debug)
         damage_rec_img, damage = recognize_damage(damage_img, debug=debug)
@@ -365,7 +391,7 @@ def recognize_screenshot(img, crop_rects, report=1, debug=1):
         hit_records.append(hit)
 
     # 99. forming result
-    result = RecognizedImage(hit_records=hit_records)
+    result = RecognizedImage(hit_records=hit_records, name=name)
     return result
 
 if __name__ == "__main__":
@@ -386,11 +412,12 @@ if __name__ == "__main__":
         print("ERROR, was not able to open image")
         exit(1)
 
+    # Get dimensions of how to crop parts of this image according to its resolution
+    dim_file = DimensionsFile("../dimensions.yaml")
+    crop_rects = dim_file.get_crop_rects(img)
 
-    img_height, img_width, _ = img.shape
-    crop_rects = load_crop_rects("../dimensions.yaml", img_width, img_height)
-
-    recognize_screenshot(img, crop_rects, debug=2, report=1)
+    # Do recognize screenshot
+    recognize_screenshot(img, crop_rects, report_path=1, debug=2)
 
 
 

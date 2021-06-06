@@ -7,9 +7,9 @@ Readiness:
 
 - [x] initial image recognition
 - [x] working with multiple resolutions
-- [ ] auto ignore duplicated records
-- [ ] parse multiple raid pictures
-- [ ] create output excell file
+- [x] auto mark duplicated records
+- [x] parse multiple raid pictures
+- [x] create output excell file
 - [ ] calculate hit time, corresponding to screenshot time
 
 ## Installation
@@ -40,8 +40,28 @@ Readiness:
 
 ## Run
 
-Now just help me develop this beast
+In the directory with gt.py run 
 
+```bash
+python gt.py <path to files>
+python gt.py screenshot1.jpg screenshot2.jpg
+python gt.py screenshot_folder/* 
+```
+
+Flags:
+
+- ```-d```, ```--debug``` - Enable debugging output. 0-none, 1-prings, 2-show images
+- ```-r```, ```--report``` - Report folder (set blank for no report)
+- ```-o```, ```--output``` - File name of resulting xlsx
+- ```-t```, ```--tesseract``` - Full path to tesseract.exe
+
+## Results
+
+You have a resulting file called by default ```result.xlsx``` 
+
+![result file](test_images/excel.png)
+
+(!) Pink cells - means same damage with the same name happened before, probably duplicate reord
 
 ## Add your resolution
 

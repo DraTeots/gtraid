@@ -2,7 +2,7 @@ import os
 import cv2
 
 import pytesseract
-from gtraid import recognize_screenshot, load_crop_rects
+from gtraid import recognize_screenshot, DimensionsFile
 
 
 
@@ -28,7 +28,7 @@ if __name__ == "__main__":
 
     # Open crop rectangles for current resolution
     img_height, img_width, _ = img.shape
-    crop_rects = load_crop_rects(os.path.join(dir_path,"dimensions.yaml"), img_width, img_height)
+    dimensions = DimensionsFile("dimensions.yaml")
 
     # Recognizes screenshot with debugging
-    recognize_screenshot(img, crop_rects, debug=2, report=1)
+    recognize_screenshot(img, dimensions.get_crop_rects(img), report_path="", debug=2)
