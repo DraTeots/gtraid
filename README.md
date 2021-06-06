@@ -63,12 +63,77 @@ You have a resulting file called by default ```result.xlsx```
 
 (!) Pink cells - means same damage with the same name happened before, probably duplicate reord
 
+## Problems
+
+**1 pip is not found:** 
+
+![pip not found](test_images/pip_is_not_recognized.png)
+
+You have installed python without pip (python package manager). 
+Either install anaconda (overkill, but reliable) or google how to install pip
+
+**2 Resolution is not found**
+
+This software needs coordinates how to crop images for each resolution. 
+And there are myriads resolutions out here now. So probably this resolution
+is not yet supported. One needs to add cropping coordinates to dimensions.yaml file
+And if you successfully do this, don't forget to submit this changes to this repo.
+
+**3 Tesseract is not found**
+
+You need tesseract package installed to run. By default it is:
+
+```
+C:\Program Files\Tesseract-OCR\tesseract.exe
+```
+
+If it is installed in another path use ```-t``` flag. And don't forget about double
+`\\` on windows when you do. Btw, use better `/` it also works and don't blow your mind
+
+
 ## Add your resolution
 
 If the beast is not working because your resolution is unknown, you have to edit
 dimensions.yaml
 
+all crop rectangles are given like: 
 
+```yaml
+hits_window:
+   x_start: 431
+   y_start: 148
+   x_end: 1770
+   y_end: 1003
+```
+Those are absolute coordinates of rectangles from left top corner of a picture. 
+Just use one of the graphics editor which shows pixel coordinates under mouse (even 
+paint should do it... I think)
 
+**hits_window**
+Coordinates from your original screenshot. Should be this rectangle:
+(!) black outer borders are important to recognize hits boxes 
 
+![hits window](test_images/hits_crop.jpg)
 
+**hit_image**
+After each hit is cropped, the software dissects hit image like this: 
+
+![crop hits](test_images/crop-hit.jpg)
+
+- name_rect - blue
+- party_rect - green
+- damage_rect - yellow
+- boss_rect - red
+
+## Debugging
+
+When you run gt.py it creates "report" folder with all sub images it creates, 
+you should see how it processes images and what it sees. 
+
+Or use ```--debug=2``` flag. It will show you all interactively
+
+```
+python gt.py --debug=2 your_file.jpg
+```
+
+And report bugs and everything here!

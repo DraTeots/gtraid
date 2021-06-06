@@ -171,7 +171,7 @@ def find_hits(img, hitbox_min_w,  hitbox_min_h, debug=1, report_path=""):
     return hit_images
 
 
-def crop_hit_image(img, img_index, name_rect, party_rect, damage_rect, boss_rect, report_path=""):
+def crop_hit_image(img, img_index, name_rect, party_rect, damage_rect, boss_rect, report_path="", debug=0):
     """
     Crops hit image to pieces with name+time, party, damage, boss images
     :param img: image with hit (box)
@@ -193,6 +193,11 @@ def crop_hit_image(img, img_index, name_rect, party_rect, damage_rect, boss_rect
     debug_image = cv2.rectangle(debug_image, party_rect[0], party_rect[1], (0, 255, 0), 2)
     debug_image = cv2.rectangle(debug_image, boss_rect[0], boss_rect[1], (0, 0, 255), 2)
     debug_image = cv2.rectangle(debug_image, damage_rect[0], damage_rect[1], (0, 255, 255), 2)
+
+    if debug >= 2:
+        cv2.imshow("How we will crop", debug_image)
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
 
     # name image
     x_start, y_start, x_end, y_end = name_rect[0][0], name_rect[0][1], name_rect[1][0], name_rect[1][1]
@@ -376,7 +381,8 @@ def recognize_screenshot(img, crop_rects, name='', report_path="", debug=1):
 
         name_img, party_img, boss_img, damage_img = crop_hit_image(hit_image, index,
                                                                    name_rect, party_rect, damage_rect, boss_rect,
-                                                                   report_path=report_path)
+                                                                   report_path=report_path,
+                                                                   debug=debug)
         # 4. Recognize name and damage
         name_rec_img, name = recognize_name(name_img, debug=debug)
         damage_rec_img, damage = recognize_damage(damage_img, debug=debug)
