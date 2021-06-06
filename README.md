@@ -1,16 +1,33 @@
-So now workflow I assume is that an admin have python and everything 
-installed, and runs script on a folder, script recognizes all images 
-and creates excel file with results. 
-The excel file contains both images and recognized names/damages
+Python scrips utilizing computer vision (OpenCV), text recognision (pyTesseract)
+libraries to automatically parse Guardian Tales screenshots and build Excel spreadsheets
+with raid hits. 
+
+At this release stage the workflow assumed is:
+
+- An admin has python and everything installed 
+- He saves the raid screenshots to a folder 
+- Then he runs this script, which recognizes all images 
+  and creates Excel file with results
+- The Excel file contains both images and recognized names/damages
 
 Readiness: 
 
-- [x] initial image recognition
-- [x] working with multiple resolutions
-- [x] auto mark duplicated records
-- [x] parse multiple raid pictures
-- [x] create output excell file
-- [ ] calculate hit time, corresponding to screenshot time
+- [x] name + damage image recognition
+- [x] support multiple resolutions
+- [x] auto mark possibly duplicated hit records
+- [x] parse multiple raid screenshots
+- [x] create output Excel file with results
+- [ ] calculate hit time, calculated from screenshot time
+
+Future plans (enhanced workflow):  
+
+- Have a discord bot 
+- So that if one uploads an image to a discord channel
+- The image got processed and if such hit is not there, 
+  it automatically added to some DB. 
+
+> This is possible only if some other developer will contribute
+ 
 
 ## Installation
 
