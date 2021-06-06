@@ -2,7 +2,7 @@ Python scrips utilizing computer vision (OpenCV), text recognision (pyTesseract)
 libraries to automatically parse Guardian Tales screenshots and build Excel spreadsheets
 with raid hits. 
 
-At this release stage the workflow assumed is:
+Currently the workflow assumed to be:
 
 - An admin has python and everything installed 
 - He saves the raid screenshots to a folder 
@@ -22,9 +22,8 @@ Readiness:
 Future plans (enhanced workflow):  
 
 - Have a discord bot 
-- So that if one uploads an image to a discord channel
-- The image got processed and if such hit is not there, 
-  it automatically added to some DB. 
+- Admins uploads images to a discord channel
+- Images got processed and are atomatically added to some DB. 
 
 > This is possible only if some other developer will contribute
  
