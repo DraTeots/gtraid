@@ -65,38 +65,59 @@ You have a resulting file called by default ```result.xlsx```
 
 ## Problems
 
-**1 pip is not found:** 
+#### Something is not recognized
+
+1 - Asian alphabet is known to cause problems. 
+
+2 - In GT not all hits fit the window. So you have to choose
+to cut one hit from the top or from the bottom. 
+Hits cut from the top may cause problem (see skewed up rectangles' placement):
+
+![hit cut from top](test_images/bad_crop.jpg)
+
+3 - Something is not recognized sometimes. 
+Just go over Excel spreadsheet and fix it manually
+
+
+#### pip is not found 
 
 ![pip not found](test_images/pip_is_not_recognized.png)
 
 You have installed python without pip (python package manager). 
 Either install anaconda (overkill, but reliable) or google how to install pip
 
-**2 Resolution is not found**
+
+#### Resolution is not found
 
 This software needs coordinates how to crop images for each resolution. 
 And there are myriads resolutions out here now. So probably this resolution
 is not yet supported. One needs to add cropping coordinates to dimensions.yaml file
 And if you successfully do this, don't forget to submit this changes to this repo.
 
-**3 Tesseract is not found**
 
-You need tesseract package installed to run. By default it is:
+#### Tesseract is not found
+
+You need tesseract package installed to run. By default, the `tesseract.exe` location
+is assumed to be:
 
 ```
 C:\Program Files\Tesseract-OCR\tesseract.exe
 ```
 
-If it is installed in another path use ```-t``` flag. And don't forget about double
-`\\` on windows when you do. Btw, use better `/` it also works and don't blow your mind
+If it is installed in another location use ```-t``` flag. 
+
+> While using -t flag don't forget about double backslash `\\` for windows paths. 
+> Btw, slash `/` also works for windows paths and don't blow your mind... most of the times
 
 
 ## Add your resolution
 
 If the beast is not working because your resolution is unknown, you have to edit
-dimensions.yaml
+`dimensions.yaml`. The file contains information of how to cut and dissect 
+a picture for each resolution. In particular, coordinates of cropping rectangles or
+"crop_rects" (as it named in the code)
 
-all crop rectangles are given like: 
+All crop rectangles are given like: 
 
 ```yaml
 hits_window:
@@ -110,8 +131,10 @@ Just use one of the graphics editor which shows pixel coordinates under mouse (e
 paint should do it... I think)
 
 **hits_window**
-Coordinates from your original screenshot. Should be this rectangle:
-(!) black outer borders are important to recognize hits boxes 
+Coordinates of a window with hits from your original screenshot. 
+Should be this rectangle:
+
+**(!)** black outer borders are important to recognize hits boxes 
 
 ![hits window](test_images/hits_crop.jpg)
 
