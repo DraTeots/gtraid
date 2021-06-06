@@ -1,6 +1,5 @@
-Python scrips utilizing computer vision (OpenCV), text recognision (pyTesseract)
-libraries to automatically parse Guardian Tales screenshots and build Excel spreadsheets
-with raid hits. 
+Utility to automatically parse Guardian Tales screenshots and build Excel spreadsheets
+with raid hits, utilizing computer vision (OpenCV) and text recognision (pyTesseract). 
 
 Currently the workflow assumed to be:
 
