@@ -125,7 +125,7 @@ if __name__ == "__main__":
 
             # NAME image
             name_img = 255 - auto_crop(255-hit_record.name_rec_img)   # crop empty edges
-            name_img = cv2.resize(name_img, (0, 0), fx=0.7, fy=0.7)  # resize to 70%
+            name_img = cv2.resize(name_img, (0, 0), fx=0.4, fy=0.4)  # resize to 40%
             name_height, name_width = name_img.shape
             is_success, buffer = cv2.imencode(".jpg", name_img)
             if name_width > max_name_width:

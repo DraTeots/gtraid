@@ -20,12 +20,14 @@ Readiness:
 - [x] parse multiple raid screenshots
 - [x] create output Excel file with results
 - [ ] calculate hit time, calculated from screenshot time
+- [ ] recognize boss (provide text name)
+- [ ] recognize team (provide text name of each member)
 
 Future plans (enhanced workflow):  
 
 - Have a discord bot 
 - Admins uploads images to a discord channel
-- Images got processed and are atomatically added to some DB. 
+- Images got processed and are automatically added to some DB. 
 
 > This is possible only if some other developer will contribute
  

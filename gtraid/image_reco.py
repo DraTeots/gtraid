@@ -307,8 +307,11 @@ def recognize_name(img, debug=0):
     # so we use autocrop function, to figure the place where name ends!
     crop_rect = auto_crop_dimensions(only_name_mask)
 
+
     # Now we crop image removing not needed time information
     crop_name_img = gray[:, :crop_rect[3]+10]
+
+    crop_name_img = cv2.resize(crop_name_img, None, fx=2, fy=2, interpolation=cv2.INTER_CUBIC)
 
     # This mask makes recognizing english and korean names easier
     mask2 = cv2.threshold(crop_name_img, 130, 255, cv2.THRESH_BINARY)[1]
