@@ -87,8 +87,8 @@ You have a resulting file called by default ```result.xlsx```
 
 1 - Asian alphabet is known to cause problems. 
 
-2 - In GT not all hits fit the window. So you have to choose
-to cut one hit from the top or from the bottom. 
+2 - In GT UI not all the hits fit into hits window. So you have to choose
+to cut the first hit from the top or the last one from the bottom. 
 Hits cut from the top may cause problem (see skewed up rectangles' placement):
 
 ![hit cut from top](test_images/bad_crop.jpg)
