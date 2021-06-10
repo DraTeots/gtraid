@@ -108,7 +108,7 @@ if __name__ == "__main__":
             # Parse damage and add to worksheet
             if hit_record.damage:
                 try:
-                    damage = int(hit_record.damage.replace(", .'", ''))
+                    damage = int(hit_record.damage.replace([',', ' ', '.', "'"], ''))
 
                     damage_name_pair = hit_record.damage + hit_record.name
 
