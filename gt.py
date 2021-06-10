@@ -31,7 +31,7 @@ if __name__ == "__main__":
     # Dimensions file
     df_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'dimensions.yaml')
     print(f"Opening dimensions file: '{df_path}'")
-    dimensions_file = DimensionsFile()
+    dimensions_file = DimensionsFile(df_path)
 
     # Create "report" directory
     if args.report and not os.path.isdir(args.report):
