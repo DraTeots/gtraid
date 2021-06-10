@@ -29,7 +29,9 @@ if __name__ == "__main__":
     pytesseract.pytesseract.tesseract_cmd = args.tesseract
 
     # Dimensions file
-    dimensions_file = DimensionsFile('dimensions.yaml')
+    df_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'dimensions.yaml')
+    print(f"Opening dimensions file: '{df_path}'")
+    dimensions_file = DimensionsFile()
 
     # Create "report" directory
     if args.report and not os.path.isdir(args.report):
