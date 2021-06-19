@@ -19,7 +19,8 @@ if __name__ == "__main__":
         os.mkdir("report")
 
     # open sample image
-    image_path = os.path.join(dir_path, 'test_images', 'rock',  'Screenshot_2021-05-31-23-32-40.png')
+    #image_path = os.path.join(dir_path, 'test_images', 'rock',  'Screenshot_2021-05-31-23-32-40.png')
+    image_path = os.path.join(dir_path, 'test_images', 't2.jpg')
     img = cv2.imread(image_path)
 
     if img is None:

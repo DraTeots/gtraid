@@ -76,7 +76,7 @@ resolutions:
                 x_end: 1725
                 y_end: 200
 
-    # 1280x720 resolution
+    # 1280x720 resolution, 2Pro Resolution
     w2220h1080:
 
         # This is the winodow where hits are listed. Must be cropped by black frame (see test images)
@@ -113,3 +113,8 @@ resolutions:
                 y_start: 64
                 x_end: 1277
                 y_end: 153
+            lvBoss_rect:
+                x_start: 895
+                y_start: 4
+                x_end: 1325
+                y_end: 53

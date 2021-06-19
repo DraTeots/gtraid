@@ -12,7 +12,8 @@ RecognizedHitRecord = namedtuple('RecognizedHitRecord',
                                   'name_rec_img',       # Image with name (used for recognition)
                                   'damage_rec_img',     # Image with damage (used for recognition)
                                   'party_img',          # Image with party
-                                  'boss_img'])          # Image with boss
+                                  'boss_img',           # Image with boss
+                                  'lvBoss_img'])        # Image with boss LVL and Name 
 
 
 RecognizedImage = namedtuple('RecognizedImage',
@@ -171,7 +172,7 @@ def find_hits(img, hitbox_min_w,  hitbox_min_h, debug=1, report_path=""):
     return hit_images
 
 
-def crop_hit_image(img, img_index, name_rect, party_rect, damage_rect, boss_rect, report_path="", debug=0):
+def crop_hit_image(img, img_index, name_rect, party_rect, damage_rect, boss_rect, lvBoss_rect, report_path="", debug=0):
     """
     Crops hit image to pieces with name+time, party, damage, boss images
     :param img: image with hit (box)
@@ -180,6 +181,7 @@ def crop_hit_image(img, img_index, name_rect, party_rect, damage_rect, boss_rect
     :param party_rect: coordinates of party rectangle ((x_start, y_start), (x_end, y_end))
     :param damage_rect: coordinates of damage rectangle ((x_start, y_start), (x_end, y_end))
     :param boss_rect:  coordinates of boss rectangle ((x_start, y_start), (x_end, y_end))
+    :param lvBoss_rect:  coordinates of boss rectangle ((x_start, y_start), (x_end, y_end))
     :param report_path: where to write report to
     :return: name_img, party_img, boss_img, damage_img
     """
@@ -193,6 +195,7 @@ def crop_hit_image(img, img_index, name_rect, party_rect, damage_rect, boss_rect
     debug_image = cv2.rectangle(debug_image, party_rect[0], party_rect[1], (0, 255, 0), 2)
     debug_image = cv2.rectangle(debug_image, boss_rect[0], boss_rect[1], (0, 0, 255), 2)
     debug_image = cv2.rectangle(debug_image, damage_rect[0], damage_rect[1], (0, 255, 255), 2)
+    debug_image = cv2.rectangle(debug_image, lvBoss_rect[0], lvBoss_rect[1], (0, 69, 255), 2)
 
     if debug >= 2:
         cv2.imshow("How we will crop", debug_image)
@@ -215,6 +218,10 @@ def crop_hit_image(img, img_index, name_rect, party_rect, damage_rect, boss_rect
     x_start, y_start, x_end, y_end = damage_rect[0][0], damage_rect[0][1], damage_rect[1][0], damage_rect[1][1]
     damage_img = img[y_start:y_end, x_start:x_end]
 
+    # lvBoss 
+    x_start, y_start, x_end, y_end = lvBoss_rect[0][0], lvBoss_rect[0][1], lvBoss_rect[1][0], lvBoss_rect[1][1]
+    lvBoss_img = img[y_start:y_end, x_start:x_end]
+
     # TODO remove it to a sane place
     if report_path:
         # Save image for a report
@@ -223,8 +230,9 @@ def crop_hit_image(img, img_index, name_rect, party_rect, damage_rect, boss_rect
         cv2.imwrite(report_path + f"___03_{str(img_index).zfill(3)}_crop-hit_party.jpg", party_img)
         cv2.imwrite(report_path + f"___03_{str(img_index).zfill(3)}_crop-hit_boss.jpg", boss_img)
         cv2.imwrite(report_path + f"___03_{str(img_index).zfill(3)}_crop-hit_damage.jpg", damage_img)
+        cv2.imwrite(report_path + f"___03_{str(img_index).zfill(3)}_crop-hit_lvBoss.jpg", lvBoss_img)
 
-    return name_img, party_img, boss_img, damage_img
+    return name_img, party_img, boss_img, damage_img, lvBoss_img
 
 
 def recognize_damage(img, debug=0):
@@ -381,9 +389,13 @@ def recognize_screenshot(img, crop_rects, name='', report_path="", debug=1):
                       crop_rects["hit_image"]["boss_rect"]["y_start"]),
                      (crop_rects["hit_image"]["boss_rect"]["x_end"],
                       crop_rects["hit_image"]["boss_rect"]["y_end"]))
+        lvBoss_rect = ((crop_rects["hit_image"]["lvBoss_rect"]["x_start"],
+                      crop_rects["hit_image"]["lvBoss_rect"]["y_start"]),
+                     (crop_rects["hit_image"]["lvBoss_rect"]["x_end"],
+                      crop_rects["hit_image"]["lvBoss_rect"]["y_end"]))              
 
-        name_img, party_img, boss_img, damage_img = crop_hit_image(hit_image, index,
-                                                                   name_rect, party_rect, damage_rect, boss_rect,
+        name_img, party_img, boss_img, damage_img, lvBoss_img = crop_hit_image(hit_image, index,
+                                                                   name_rect, party_rect, damage_rect, boss_rect, lvBoss_rect,
                                                                    report_path=report_path,
                                                                    debug=debug)
         # 4. Recognize name and damage
@@ -396,7 +408,8 @@ def recognize_screenshot(img, crop_rects, name='', report_path="", debug=1):
                                   name_rec_img=name_rec_img,      # Image with name (used for recognition)
                                   damage_rec_img=damage_rec_img,  # Image with damage (used for recognition)
                                   party_img=party_img,            # Image with party
-                                  boss_img=boss_img)              # Image with boss
+                                  boss_img=boss_img,              # Image with boss
+                                  lvBoss_img=lvBoss_img)          # Image with lvBoss
         hit_records.append(hit)
 
     # 99. forming result

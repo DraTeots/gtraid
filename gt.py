@@ -63,12 +63,14 @@ if __name__ == "__main__":
     max_party_width = 100
     max_boss_width = 100
     max_hit_width = 100
+    max_LvBoss_width = 100
 
     worksheet.set_column_pixels("B:B", max_name_width)      # Name image column
     worksheet.set_column_pixels("D:D", max_damage_width)    # Damage image  column
     worksheet.set_column_pixels("E:E", max_party_width)     # Party image column
     worksheet.set_column_pixels("F:F", max_boss_width)      # Boss image column
-    worksheet.set_column_pixels("G:G", 400)
+    worksheet.set_column_pixels("G:G", max_LvBoss_width)    # Testing Boss Text
+    worksheet.set_column_pixels("K:K", 400)
     worksheet.set_column_pixels("I:I", max_hit_width)
 
     # What files to process
@@ -167,6 +169,15 @@ if __name__ == "__main__":
                 worksheet.set_column_pixels("F:F", max_boss_width+10)
             worksheet.insert_image(f'F{cur_row}', f'boss{cur_row}', {'image_data': io.BytesIO(buffer)})
 
+            # lvBoss Text image lvBoss
+            lvBoss_img = cv2.resize(hit_record.lvBoss_img, (0, 0), fx=0.5, fy=0.5)
+            lvBoss_height, lvBoss_width, _ = lvBoss_img.shape
+            is_success, buffer = cv2.imencode(".jpg", lvBoss_img)
+            if lvBoss_width > max_LvBoss_width:
+                max_LvBoss_width = lvBoss_width
+                worksheet.set_column_pixels("G:G", max_LvBoss_width+10)
+            worksheet.insert_image(f'G{cur_row}', f'boss{cur_row}', {'image_data': io.BytesIO(buffer)})
+
             # Hit image
             hit_img = cv2.resize(hit_record.original_img, (0, 0), fx=0.7, fy=0.7)  # resize to 70%
             hit_height, hit_width, _ = hit_img.shape
@@ -184,8 +195,8 @@ if __name__ == "__main__":
             worksheet.set_row_pixels(cur_row - 1, row_height)
 
             # Add file name
-            worksheet.write(f'G{cur_row}', image_base_name)
-            worksheet.write(f'H{cur_row}', hit_index)
+            worksheet.write(f'K{cur_row}', image_base_name)
+            worksheet.write(f'J{cur_row}', hit_index)
 
             cur_row += 1
 
