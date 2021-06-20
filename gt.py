@@ -49,6 +49,7 @@ if __name__ == "__main__":
 
     # Boss column
     worksheet.set_column('H:H', 15)
+    worksheet.set_column('I:I', 15)
 
     # Format output for a damage
     damage_num_format = workbook.add_format({'num_format': '#,##0.', 'align': 'left'})
@@ -73,8 +74,8 @@ if __name__ == "__main__":
     worksheet.set_column_pixels("E:E", max_party_width)     # Party image column
     worksheet.set_column_pixels("F:F", max_boss_width)      # Boss image column
     worksheet.set_column_pixels("G:G", max_LvBoss_width)    # Testing Boss Text
-    worksheet.set_column_pixels("K:K", 400)
-    worksheet.set_column_pixels("I:I", max_hit_width)
+    worksheet.set_column_pixels("L:L", 400)
+    worksheet.set_column_pixels("J:J", max_hit_width)
 
     # What files to process
     files = []
@@ -109,7 +110,7 @@ if __name__ == "__main__":
 
             # Add name to worksheet
             worksheet.write(f'A{cur_row}', hit_record.name)
-            worksheet.write(f'H{cur_row}', hit_record.boss)
+            worksheet.write(f'I{cur_row}', hit_record.boss)
             # Parse damage and add to worksheet
             if hit_record.damage:
                 try:
@@ -133,6 +134,18 @@ if __name__ == "__main__":
                     print(f"WARNING: can't convert damage '{hit_record.damage}' to integer! {ex}")
             else:
                 print(f"WARNING: Damage is empty for hit# {hit_index} name: '{hit_record.name}'")
+
+            if hit_record.boss:
+                boss = hit_record.boss
+                if boss.find('Marina') != -1: 
+                    boss = 'Marina'
+                elif boss.find('Goblin') != -1:
+                    boss = 'Goblin'
+                elif boss.find('Slime') != -1:
+                    boss = 'Lava'
+                elif boss.find('monster') != -1:
+                    boss = 'Sandy'
+                worksheet.write(f'H{cur_row}', boss)
 
             # NAME image
             name_img = 255 - auto_crop(255-hit_record.name_rec_img)   # crop empty edges
@@ -190,16 +203,16 @@ if __name__ == "__main__":
             is_success, buffer = cv2.imencode(".jpg", hit_img)
             if hit_width > max_hit_width:
                 max_hit_width = hit_width
-                worksheet.set_column_pixels("I:I", max_hit_width + 10)
-            worksheet.insert_image(f'I{cur_row}', f'hit{cur_row}', {'image_data': io.BytesIO(buffer), 'x_scale': hit_image_scale, 'y_scale': hit_image_scale})
+                worksheet.set_column_pixels("J:J", max_hit_width + 10)
+            worksheet.insert_image(f'J{cur_row}', f'hit{cur_row}', {'image_data': io.BytesIO(buffer), 'x_scale': hit_image_scale, 'y_scale': hit_image_scale})
 
             # Now what is row height?
             row_height = max(name_height, damage_height, party_height, boss_height, hit_height)
             worksheet.set_row_pixels(cur_row - 1, row_height)
 
             # Add file name
-            worksheet.write(f'K{cur_row}', image_base_name)
-            worksheet.write(f'J{cur_row}', hit_index)
+            worksheet.write(f'L{cur_row}', image_base_name)
+            worksheet.write(f'K{cur_row}', hit_index)
 
             cur_row += 1
 
