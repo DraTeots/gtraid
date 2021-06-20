@@ -13,7 +13,8 @@ RecognizedHitRecord = namedtuple('RecognizedHitRecord',
                                   'damage_rec_img',     # Image with damage (used for recognition)
                                   'party_img',          # Image with party
                                   'boss_img',           # Image with boss
-                                  'lvBoss_img'])        # Image with boss LVL and Name 
+                                  'lvBoss_img',         # Image with boss LVL and Name 
+                                  'boss'])              # Recognized Boss
 
 
 RecognizedImage = namedtuple('RecognizedImage',
@@ -266,6 +267,27 @@ def recognize_damage(img, debug=0):
 
     return mask, damage_str
 
+def recognize_boss(img, debug=0):
+        # create grayscale
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+    # threshold image to remove noise and create an inverted mask with with OTSU
+    mask = 255 - cv2.threshold(gray, 160, 255, cv2.THRESH_BINARY)[1]
+
+    if debug >= 2:
+        cv2.imshow("Original", img)
+        cv2.imshow("Masking damage", mask)
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
+
+    # By default OpenCV stores images in BGR format and since pytesseract assumes RGB format,
+    # we need to convert from BGR to RGB format/mode:
+    img_rgb = cv2.cvtColor(mask, cv2.COLOR_BGR2RGB)
+
+    boss_str = pytesseract.image_to_string(img_rgb)
+    print("recognize_boss: boss is:", boss_str)
+    
+    return mask, boss_str
 
 def auto_crop_dimensions(image, threshold=0):
     """Find crop dimensions aiming to crop any edges below or equal to threshold
@@ -401,6 +423,7 @@ def recognize_screenshot(img, crop_rects, name='', report_path="", debug=1):
         # 4. Recognize name and damage
         name_rec_img, name = recognize_name(name_img, debug=debug)
         damage_rec_img, damage = recognize_damage(damage_img, debug=debug)
+        lvBoss_rec_img, boss = recognize_boss(lvBoss_img, debug=debug)
 
         hit = RecognizedHitRecord(name=name,                      # Recognized name
                                   damage=damage,                  # Recognized damage
@@ -409,7 +432,8 @@ def recognize_screenshot(img, crop_rects, name='', report_path="", debug=1):
                                   damage_rec_img=damage_rec_img,  # Image with damage (used for recognition)
                                   party_img=party_img,            # Image with party
                                   boss_img=boss_img,              # Image with boss
-                                  lvBoss_img=lvBoss_img)          # Image with lvBoss
+                                  lvBoss_img=lvBoss_img,          # Image with lvBoss
+                                  boss=boss)                      # Recognized Boss
         hit_records.append(hit)
 
     # 99. forming result

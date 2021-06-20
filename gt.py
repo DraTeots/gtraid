@@ -47,6 +47,9 @@ if __name__ == "__main__":
     # Damage column
     worksheet.set_column('C:C', 15)
 
+    # Boss column
+    worksheet.set_column('H:H', 15)
+
     # Format output for a damage
     damage_num_format = workbook.add_format({'num_format': '#,##0.', 'align': 'left'})
     damage_exists_format = workbook.add_format({'num_format': '#,##0.', 'bg_color': '#ffb3b3', 'align': 'left'})   # #ffb3b3 - light red
@@ -106,7 +109,7 @@ if __name__ == "__main__":
 
             # Add name to worksheet
             worksheet.write(f'A{cur_row}', hit_record.name)
-
+            worksheet.write(f'H{cur_row}', hit_record.boss)
             # Parse damage and add to worksheet
             if hit_record.damage:
                 try:
