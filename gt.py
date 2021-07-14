@@ -77,7 +77,7 @@ if __name__ == "__main__":
     worksheet.set_column("L:L", 400)
     worksheet.set_column("J:J", max_hit_width)
 
-    worksheet.set_column_pixels("B:B", max_name_width)      # Name image column
+    # worksheet.set_column_pixels("B:B", max_name_width)      # Name image column
     # worksheet.set_column_pixels("D:D", max_damage_width)    # Damage image  column
     # worksheet.set_column_pixels("E:E", max_party_width)     # Party image column
     # worksheet.set_column_pixels("F:F", max_boss_width)      # Boss image column
@@ -143,17 +143,30 @@ if __name__ == "__main__":
             else:
                 print(f"WARNING: Damage is empty for hit# {hit_index} name: '{hit_record.name}'")
 
+            # "SO Shadow Beast " "SO Invader Commander " "SO Furious Minotaur " "SO Cyborg Erina "
             if hit_record.boss:
                 boss = hit_record.boss
-                if boss.find('Marina') != -1: 
-                    boss = 'Marina'
-                elif boss.find('Goblin') != -1:
-                    boss = 'Goblin'
-                elif boss.find('Slime') != -1:
-                    boss = 'Lava'
-                elif boss.find('monster') != -1:
-                    boss = 'Sandy'
+                if boss.find('Beast') != -1: 
+                    boss = 'Beast'
+                elif boss.find('Commander') != -1:
+                    boss = 'Commander'
+                elif boss.find('Minotaur') != -1:
+                    boss = 'Minotaur'
+                elif boss.find('Erina') != -1:
+                    boss = 'Erina'
                 worksheet.write(f'H{cur_row}', boss)
+
+            # if hit_record.boss:
+            #     boss = hit_record.boss
+            #     if boss.find('Marina') != -1: 
+            #         boss = 'Marina'
+            #     elif boss.find('Goblin') != -1:
+            #         boss = 'Goblin'
+            #     elif boss.find('Slime') != -1:
+            #         boss = 'Lava'
+            #     elif boss.find('monster') != -1:
+            #         boss = 'Sandy'
+            #     worksheet.write(f'H{cur_row}', boss)
 
             # NAME image
             name_img = 255 - auto_crop(255-hit_record.name_rec_img)   # crop empty edges
