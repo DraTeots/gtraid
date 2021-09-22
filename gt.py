@@ -65,7 +65,7 @@ if __name__ == "__main__":
     max_name_width = 100
     max_damage_width = 100
     max_party_width = 100
-    max_boss_width = 100
+    max_boss_width = 50
     max_hit_width = 100
     max_LvBoss_width = 100
 
@@ -143,18 +143,30 @@ if __name__ == "__main__":
             else:
                 print(f"WARNING: Damage is empty for hit# {hit_index} name: '{hit_record.name}'")
 
-            # "SO Shadow Beast " "SO Invader Commander " "SO Furious Minotaur " "SO Cyborg Erina "
             if hit_record.boss:
                 boss = hit_record.boss
-                if boss.find('Beast') != -1: 
-                    boss = 'Beast'
+                if boss.find('Goblin') != -1: 
+                    boss = 'Goblin'
                 elif boss.find('Commander') != -1:
-                    boss = 'Commander'
-                elif boss.find('Minotaur') != -1:
-                    boss = 'Minotaur'
-                elif boss.find('Erina') != -1:
-                    boss = 'Erina'
+                    boss = 'Invader'
+                elif boss.find('Sandmonster') != -1:
+                    boss = 'Sandy'
+                elif boss.find('Marina') != -1:
+                    boss = 'Marina'
                 worksheet.write(f'H{cur_row}', boss)
+
+            # "SO Shadow Beast " "SO Invader Commander " "SO Furious Minotaur " "SO Cyborg Erina "
+            # if hit_record.boss:
+            #     boss = hit_record.boss
+            #     if boss.find('Beast') != -1: 
+            #         boss = 'Beast'
+            #     elif boss.find('Commander') != -1:
+            #         boss = 'Commander'
+            #     elif boss.find('Minotaur') != -1:
+            #         boss = 'Minotaur'
+            #     elif boss.find('Erina') != -1:
+            #         boss = 'Erina'
+            #     worksheet.write(f'H{cur_row}', boss)
 
             # if hit_record.boss:
             #     boss = hit_record.boss
@@ -175,8 +187,8 @@ if __name__ == "__main__":
             is_success, buffer = cv2.imencode(".jpg", name_img)
             if name_width > max_name_width:
                 max_name_width = name_width
-                worksheet.set_column("B:B", max_name_width+10)
-                # worksheet.set_column_pixels("B:B", max_name_width+10)
+                #worksheet.set_column("B:B", max_name_width+10)
+                worksheet.set_column_pixels("B:B", max_name_width+10)
             worksheet.insert_image(f'B{cur_row}', f'name{cur_row}', {'image_data': io.BytesIO(buffer), 'object_position': 1})
 
             # Damage image
@@ -186,8 +198,8 @@ if __name__ == "__main__":
             is_success, buffer = cv2.imencode(".jpg", damage_img)
             if damage_width > max_damage_width:
                 max_damage_width = damage_width
-                worksheet.set_column("D:D", max_damage_width+10)
-                # worksheet.set_column_pixels("D:D", max_damage_width+10)
+                #orksheet.set_column("D:D", max_damage_width+10)
+                worksheet.set_column_pixels("D:D", max_damage_width+10)
             worksheet.insert_image(f'D{cur_row}', f'damage{cur_row}', {'image_data': io.BytesIO(buffer)})
 
             # Party image
@@ -196,8 +208,8 @@ if __name__ == "__main__":
             is_success, buffer = cv2.imencode(".jpg", party_img)
             if party_width > max_party_width:
                 max_party_width = party_width
-                worksheet.set_column("E:E", max_party_width+10)
-                # worksheet.set_column_pixels("E:E", max_party_width+10)
+                #worksheet.set_column("E:E", max_party_width+10)
+                worksheet.set_column_pixels("E:E", max_party_width+10)
             worksheet.insert_image(f'E{cur_row}', f'party{cur_row}', {'image_data': io.BytesIO(buffer)})
 
             # Boss image
@@ -206,8 +218,8 @@ if __name__ == "__main__":
             is_success, buffer = cv2.imencode(".jpg", boss_img)
             if boss_width > max_boss_width:
                 max_boss_width = boss_width
-                worksheet.set_column("E:E", max_party_width+10)
-                # worksheet.set_column_pixels("F:F", max_boss_width+10)
+                #worksheet.set_column("E:E", max_party_width+10)
+                worksheet.set_column_pixels("F:F", max_boss_width+10)
             worksheet.insert_image(f'F{cur_row}', f'boss{cur_row}', {'image_data': io.BytesIO(buffer)})
 
             # lvBoss Text image lvBoss
@@ -216,8 +228,8 @@ if __name__ == "__main__":
             is_success, buffer = cv2.imencode(".jpg", lvBoss_img)
             if lvBoss_width > max_LvBoss_width:
                 max_LvBoss_width = lvBoss_width
-                worksheet.set_column("G:G", max_LvBoss_width+10)
-                # worksheet.set_column_pixels("G:G", max_LvBoss_width+10)
+                #worksheet.set_column("G:G", max_LvBoss_width+10)
+                worksheet.set_column_pixels("G:G", max_LvBoss_width+10)
             worksheet.insert_image(f'G{cur_row}', f'boss{cur_row}', {'image_data': io.BytesIO(buffer)})
 
             # Hit image
@@ -229,8 +241,8 @@ if __name__ == "__main__":
             is_success, buffer = cv2.imencode(".jpg", hit_img)
             if hit_width > max_hit_width:
                 max_hit_width = hit_width
-                worksheet.set_column("J:J", max_hit_width + 10)
-                # worksheet.set_column_pixels("J:J", max_hit_width + 10)
+                #worksheet.set_column("J:J", max_hit_width + 10)
+                worksheet.set_column_pixels("J:J", max_hit_width + 10)
             worksheet.insert_image(f'J{cur_row}', f'hit{cur_row}', {'image_data': io.BytesIO(buffer), 'x_scale': hit_image_scale, 'y_scale': hit_image_scale})
 
             # Now what is row height?
