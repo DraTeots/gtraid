@@ -22,7 +22,8 @@ if __name__ == "__main__":
     # https://yangcha.github.io/iview/iview.html
     #image_path = os.path.join(dir_path, 'test_images', 'rock',  'Screenshot_2021-05-31-23-32-40.png')
     #image_path = os.path.join(dir_path, 'test_images', 't2.jpg')
-    image_path = os.path.join(dir_path, 'test_images', '1440_720x.png')
+    #image_path = os.path.join(dir_path, 'test_images', '1440_720x.png')1792_828x
+    image_path = os.path.join(dir_path, 'test_images', '1792_828x.png')
     img = cv2.imread(image_path)
 
     if img is None:
