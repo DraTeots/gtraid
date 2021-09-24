@@ -352,7 +352,8 @@ def recognize_name(img, debug=0):
     # recognize the image
     name = pytesseract.image_to_string(reco_image, lang="kor+eng")
     if name:
-        name = name.strip()
+        name = name[:name.find(' ')]
+        #name = name.strip()
     print(f"Name is: {name}")
 
     if debug >= 2:

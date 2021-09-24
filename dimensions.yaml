@@ -118,3 +118,90 @@ resolutions:
                 y_start: 4
                 x_end: 1325
                 y_end: 53
+    
+    # 1440x720 resolution Smol Bear
+    w1440h720:
+
+        # This is the winodow where hits are listed. Must be cropped by black frame (see test images)
+        hits_window:
+            x_start: 269
+            y_start: 102
+            x_end: 1158
+            y_end: 672
+
+        hit_image:
+            # We use these dimensions to drop partially scrolled hits,
+            # which are difficult/impossible to recognize
+            min_width: 880  # original 888
+            min_height: 100  # original 112
+
+            # inside image, where name, party and boss are located
+            name_rect:
+                x_start: 5
+                y_start: 4
+                x_end: 291
+                y_end: 36
+            party_rect:
+                x_start: 10
+                y_start: 46
+                x_end: 250
+                y_end: 100
+            damage_rect:
+                x_start: 255
+                y_start: 50
+                x_end: 670
+                y_end: 105
+            boss_rect:
+                x_start: 710
+                y_start: 45
+                x_end: 850
+                y_end: 105
+            lvBoss_rect:
+                x_start: 600
+                y_start: 4
+                x_end: 880
+                y_end: 36
+
+    # 1792x828 resolution Rip vivi
+    w1792h828:
+
+        # This is the winodow where hits are listed. Must be cropped by black frame (see test images)
+        hits_window:
+            x_start: 376
+            y_start: 112
+            x_end: 1402
+            y_end: 766
+
+        hit_image:
+            # We use these dimensions to drop partially scrolled hits,
+            # which are difficult/impossible to recognize
+            min_width: 880  # original 888
+            min_height: 100  # original 112
+
+            # inside image, where name, party and boss are located
+            name_rect:
+                x_start: 5
+                y_start: 4
+                x_end: 291
+                y_end: 36
+            party_rect:
+                x_start: 10
+                y_start: 53
+                x_end: 285
+                y_end: 120
+            damage_rect:
+                x_start: 295
+                y_start: 53
+                x_end: 675
+                y_end: 120
+            boss_rect:
+                x_start: 800
+                y_start: 45
+                x_end: 1000
+                y_end: 120
+            lvBoss_rect:
+                x_start: 680
+                y_start: 2
+                x_end: 1020
+                y_end: 36
+    
