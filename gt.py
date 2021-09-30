@@ -153,7 +153,7 @@ if __name__ == "__main__":
                 elif boss.find('Demon') != -1:
                     boss = 'Demon'
                 elif boss.find('Erina') != -1:
-                    boss = 'Erina'
+                    boss = 'Cyborg'
                 worksheet.write(f'H{cur_row}', boss)
 
             # if hit_record.boss:
