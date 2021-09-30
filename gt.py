@@ -143,17 +143,30 @@ if __name__ == "__main__":
             else:
                 print(f"WARNING: Damage is empty for hit# {hit_index} name: '{hit_record.name}'")
 
+
             if hit_record.boss:
                 boss = hit_record.boss
-                if boss.find('Goblin') != -1: 
-                    boss = 'Goblin'
-                elif boss.find('Commander') != -1:
-                    boss = 'Invader'
-                elif boss.find('Sandmonster') != -1:
-                    boss = 'Sandy'
-                elif boss.find('Marina') != -1:
-                    boss = 'Marina'
+                if boss.find('Panda') != -1: 
+                    boss = 'Panda'
+                elif boss.find('Fox') != -1:
+                    boss = 'Garam'
+                elif boss.find('Demon') != -1:
+                    boss = 'Demon'
+                elif boss.find('Erina') != -1:
+                    boss = 'Erina'
                 worksheet.write(f'H{cur_row}', boss)
+
+            # if hit_record.boss:
+            #     boss = hit_record.boss
+            #     if boss.find('Goblin') != -1: 
+            #         boss = 'Goblin'
+            #     elif boss.find('Commander') != -1:
+            #         boss = 'Invader'
+            #     elif boss.find('Sandmonster') != -1:
+            #         boss = 'Sandy'
+            #     elif boss.find('Marina') != -1:
+            #         boss = 'Marina'
+            #     worksheet.write(f'H{cur_row}', boss)
 
             # "SO Shadow Beast " "SO Invader Commander " "SO Furious Minotaur " "SO Cyborg Erina "
             # if hit_record.boss:
